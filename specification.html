@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Http Portlet Protocol/1.1</title>
+</head>
+<body>
+	<h2><a name="HTPP">1. Http Portlet Protocol/1.1 - Draft/8th August 2010</a></h2>
+	<h3>1.1. Architecture overview</h3>
+	<ol>
+		<li><strong>Portal</strong> - front end server that handles user requests</li>
+		<li><strong>Portlets</strong>- the distributed components that are invoked via server-to-server http requests from the Portal's container</li>
+		<li><strong>Proxy</strong> - optional proxy between Portal and Portlets for high availability via asynchronous multi-casting</li>	
+	</ol>	
+	<ul>
+		<li>this is a specification of communication path from portal to each individual portlet</li>
+		<li>portlet is not aware of the client request URL ( so it cannot create links and redirects ) </li>
+		<li>portlets receive all actions via html forms, method="get" or method="post"</li>
+		<li>portlet has got a toplevel element &lt;body&gt; which is ignored on the portal
+			<ul>
+				<li>every child of body represents a fragment</li>
+				<li>if the body has got more then one child element, they have to be distinguished by a fragment attribute with given name</li>
+				<li>portlet should not contain any style, only html structure</li>
+			</ul>
+		</li>
+	</ul>
+	
+	<h3>1.2. Portlet Request</h3>
+	Portlet Request is a request made by Portal that retreives all fragments required for the page being requested by the client.
+	<h4>1.2.1. Allowed methods are GET or POST, Action requests are either GET with query string or POST, otherwise it is VIEW request</h4>
+  	<ul>
+  		<li>Portlet must receive all submitted html forms as defined with method="get" or method="post"</li>  		
+  		<li>Portlet must receive all cookies it has set on behalf of client request, Portal is responsible to deliver them with next request and expire them accordingly; except cookie path is not applicable.</li>
+  		<li>Portlet requests are generally either <b>Action</b> or <b>Render</b> Requests; only one portlet can receive the action and it is responsiblity of the portal to target the correct portlet with the action</li>
+  	</ul>	
+	<h4>1.2.2. Portlet Request headers</h4>
+	<ul>
+		<li><strong>User-Agent: &lt;original user agent&gt; + " Portal\s[0-9]\.[0-9]"</strong></li>
+		<li><strong>Cookie:</strong> ( private and shared cookies that ara available for the portlet)</li>
+		<li><strong>If-Modified-Since: &lt;http timestamp&gt;</strong> - cache validation timestamp</li>
+		<li><strong>Pragma: no-cache</strong> - Tells the portlet to flush all private caches; it is optional for portlets to implement this</li>	  
+		<li><strong>Portlet-fragments: &lt;list of comma separated fragment names&gt;</strong> - portlets must implement default fragment and can implmenet other fragments</li>
+    </ul> 	      	
+	<h4>1.2.3. Request entity (POST only)</h4>
+	<ul>	 
+		<li>Portlets can use any variant of HTTP POST </li>
+	</ul>
+ 
+	<h3>1.3. Portlet Response</h3>
+
+	<h4>1.3.1. Response status</h4>	
+	<ul>	 
+		<li><strong>200 OK</strong> + Portlet HTML Mark-up (see <a href="#ResponseBody">2.3.3. Response Body</a>) </li>
+		<li><strong>304 Not Modified</strong></li> 
+		<li><small>206 Partial Content (NOT SPECIFIED)</small></li>
+	</ul>
+ 
+	<h4>1.3.2. Response headers</h4>	
+	<ul>	 
+		<li><strong>Content-type: text/html | text/html-fragments</strong> </li>	  
+		<li><strong>Set-Cookie:</strong> ( private cookies, e.g. mycookie=123, and shared cookies, e.g. $email=me@there.com )
+	</ul>
+	<blockquote>		  
+	BY DEFAULT RESPONSE IS CACHABLE IF IT IS GET METHOD AND THE HEADERS HAVE NOT CHANGED  
+	PORTLET CAN OVERRIDE THIS DEFAULT BEHAVIOUR BY FOLLOWING HEADERS 
+	</blockquote>
+	<ul>
+		<li><strong>Last-Modified: &lt;http timestamp&gt;</strong>  - tells the portal that it can validate cache</li>  
+	  	<li><strong>Cache-Control: [max-age=&lt;seconds&gt;][, must-revalidate]] </strong>
+		  	<ul>
+			  	<li><strong>max-age</strong> fields tells the portal or proxy that it can cache the response for given number of seconds</li> 	   
+			  	<li><strong>must-revalidate</strong> field tells the portal or proxy that either default or max-age cache must be revalidated
+			  		<ul>  
+			  	  		<li>portal will issue If-Modified-Since header the moment it needs to use the cached response, if no Last-Modified was returned from last request the last response-time is used</li>
+			  	  		<li>protlet which will either respond with 304 Not Modifed, or 200 OK + Response</li>			  	  	
+			  			<li>TODO Proxy Specification</li>
+			  		</ul>
+			  	</li>
+		  	</ul>
+		</li>
+	</ul>
+	<h4><a name="ResponseBody">1.3.3. Response Body</a></h4>
+	<blockquote>
+		This is always a HTML Mark-up with following limitations:
+	</blockquote>
+		
+	<h5>1.3.3.1. Top Level Elements</h5>
+	<ul>
+		<li>portlet's top level element is &lt;body&gt; therefore no head section is allowed</li>
+		<li>immediate children elements of the body must associate themselves with fragments by fragment attribute, e.g. &lt;div fragment="default"&gt;</li>
+	</ul>
+	<h5>1.3.3.2. Links (@href, @src and @action)</h5>
+	<blockquote>
+		Only absolute links are allowed in the portlet mark-up, any relative link will produce warning
+	</blockquote>		
+	<h5>1.3.3.3. Styles</h5>
+	<ul>
+		<li>no inline style is allowed and should be removed by Portal upon retreival</li>
+		<li>class and id will be preserved but every fragment element will have it's class extended with the portlet id</li> 
+	</ul>
+	
+	<h4><a name="">1.4 Cookies</a></h4>
+	<ol>
+		<li><strong>shared cookies</strong> - begin with '$' symbol and can be accessed from any portlet</li> 
+		<li><strong>private cookies</strong> - each portlet has it's own cookie space; this must be transparent so that portlet simply sets and retreives cookies as normal and it is responsibility of the portal to implement the storage</li>
+	</ol>
+</body>
+</html>
