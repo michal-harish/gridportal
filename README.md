@@ -45,45 +45,42 @@ Reference Manual
     
 1.2 HTML Mark-Up Extension  
  
-1.2.1 Portlet declarations in the html document's head     
-    <html>  
-        <head>
-        
-            <!-- declaration of the portlet for entire document -->
-            <portlet id="^[a-z_-0-9]+$" url="^/|https://">
-                
-                <!-- mapped url query string parameter; mandatory or optional-->                                                
-                <param name="" get="^[a-z_-0-9]+$" [required="yes"]/>
-                
-                <!-- mapped cookie; mandatory or optional; global $cookie or private portlet_id[cookie_name]        
-                <param name="" cookie="^\$[a-z_-0-9]+|[^\$\[]+\[[^\]]\]$" [required="yes"]/>
-                
-                <!-- a page-specific configuration param for portlet -->
-                
-                <!-- NOTE: mapped params will be part of the cache identifier whereas config params will not be -->                                   
-                <param name="" value="...some_value.."/>                    
-                                                                            
-            </portlet>
-        </head>
-        ...
-    </html>
+1.2.1 Portlet declarations in the html document's head    
+ 
+ 
+    <head>        
+        <!-- declaration of the portlet for entire document -->
+        <portlet id="^[a-z_-0-9]+$" url="^/|https://">
+            
+            <!-- mapped url query string parameter; mandatory or optional-->                                                
+            <param name="" get="^[a-z_-0-9]+$" [required="yes"]/>
+            
+            <!-- mapped cookie; mandatory or optional; global $cookie or private portlet_id[cookie_name]        
+            <param name="" cookie="^\$[a-z_-0-9]+|[^\$\[]+\[[^\]]\]$" [required="yes"]/>
+            
+            <!-- a page-specific configuration param for portlet -->
+            
+            <!-- NOTE: mapped params will be part of the cache identifier whereas config params will not be -->                                   
+            <param name="" value="...some_value.."/>
+        </portlet>
+    </head>
+
     
 1.2.2 References to portlet fragments from the html document's body
-    <html>
-        ... 
-        <body>
-            ...
-            <!-- fragment refernce to portlet declared in head -->
-            <portlet id="declared_portlet_id" fragment="<fragment_id>"/>        
-            
-            <!-- portlet fragment refernce with explicit url -->
-            <portlet url="^/|https://" fragment="<fragment_id>"/>               
-            
-            <!-- all forms that don't have absolute actions will land on the target location-->
-            <portlet url="^/|https://" fragment="<fragment_id>" target="some_url_or_uri"/>  
-            ...
-        </body>
-    </html>
+
+
+    <body>
+        ...
+        <!-- fragment refernce to portlet declared in head -->
+        <portlet id="declared_portlet_id" fragment="<fragment_id>"/>        
+        
+        <!-- portlet fragment refernce with explicit url -->
+        <portlet url="^/|https://" fragment="<fragment_id>"/>               
+        
+        <!-- all forms that don't have absolute actions will land on the target location-->
+        <portlet url="^/|https://" fragment="<fragment_id>" target="some_url_or_uri"/>  
+        ...
+    </body>
     
 1.3 Portlet HTML Mark-Up Limitations
 
