@@ -5,7 +5,8 @@ require 'http.php';
 //first handler is for proxying cross-domain 
 if (isset($_SERVER['HTTP_X_DOMAIN_REQUEST'])) {
 	try {
-		$xhttp = new http(urldecode($_SERVER['HTTP_X_DOMAIN_REQUEST']),null,600); 
+		$url = urldecode($_SERVER['HTTP_X_DOMAIN_REQUEST']);
+		$xhttp = new http($url,null,600); 
 		set_time_limit(700);
 		$r = array(
 			'Portlet-ajax'=>1,
@@ -35,6 +36,7 @@ if (isset($_SERVER['HTTP_X_DOMAIN_REQUEST'])) {
 			header("HTTP/1.1 304 Not Modified");
 		} else {
 			header("HTTP/1.1 502 Proxy Error");
+			header("Exception: " . $e->getMessage());
 		}		
 	}
 	exit();

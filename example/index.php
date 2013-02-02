@@ -41,6 +41,10 @@
 				<br class="clr"/>
 			</h2>
 		</div>
+		
+		<!-- blocking portlet that responds to change immediately -->
+		<g:portlet class="ajax" id="gridport-log" url="/portletBlocking.php" fragment="clock"/>
+		
 
 		<table style="width:100%;" >
 			<tr>
