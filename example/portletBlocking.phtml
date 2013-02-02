@@ -1,0 +1,14 @@
+<?php 
+	if (isset($_SERVER['HTTP_PORTLET_AJAX'])) {
+		$minute = idate("i");
+		while ($minute == idate("i")) {
+			sleep(1);
+		}		
+	}
+	header("Cache-Control: max-age=1");
+?>
+<div id="clock">
+	<?php
+	echo date("d F Y h:i:s", time());
+	?>
+</div>
