@@ -1,0 +1,22 @@
+@import url(http://media.gridport.co/aos/main.css);
+
+.clr { clear:both;}
+.fragment { background-color: #EEEEDD; padding:0.25em; border-radius:5px; font-size:14px; }
+.fragment.ajax { border: 1px dashed red ;}
+.error {}
+
+#header span { float:left;}
+#default.nav {float:left;  }
+#searchTools.search { float:right; }
+#header .auth {float:right;}
+#header .debug { float:right;}
+
+.col1 { width: 400px; }
+.col2 {  }
+.col3 { width: 290px;}
+#processlist { font:bold 11px Courier New;}
+
+form.contact label { width:4em;}
+form.contact textarea { width:15em;}
+
+#footer {text-align:center;}

@@ -1,0 +1,45 @@
+<?php 
+$last_modified = filemtime(__FILE__);
+if (!$_POST && isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+	if ($last_modified <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+		header("HTTP/1.1 304 Not Modified");
+		exit();
+	}
+}
+header("Last-Modified: ".date(DATE_COOKIE,$last_modified));
+header("Cache-Control: must-revalidate");
+
+$logged_in = isset($_COOKIE['$email']) ? $_COOKIE['$email'] : false;
+if (isset($_POST['logout'])) {
+	setcookie('$email','delete',1);
+	$logged_in = false;
+} elseif (isset($_POST['email'])) {
+	setcookie('$email',$_POST['email']);
+	$logged_in = $_POST['email'];
+}			
+?>
+<html>
+	<head>
+		<style type="text/css" media="screen, projection">	
+			@import url(/theme.css);				
+			@import url(/portlet.css);
+		</style>		
+	</head>
+	<body>
+		<div id="default">
+			<?php if ($logged_in) : ?>
+				<form method="POST"><input type="submit" name="logout" value="Logout"/></form>
+			<?php else :  ?>
+				<form method="POST">
+					<input name="email"/><input type="submit" value="Log In With OpenID Email"/>
+				</form>
+			<?php endif ?>
+		</div>
+	</body>
+</html>
+<?php 
+
+function x() {
+	
+}
+

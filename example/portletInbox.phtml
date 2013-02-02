@@ -1,0 +1,25 @@
+<?php 
+$last_modified = filemtime(dirname(__FILE__) . "/portletInbox.phtml");
+if ($last_modified <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+	header("HTTP/1.1 304 Not Modified");
+	exit();
+}
+header("Content-type: text/html");
+header("Last-Modified: ".date(DATE_COOKIE,$last_modified));
+header("Cache-Control: max-age=30, no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+?>
+<html>
+	<head>
+		<style type="text/css" media="screen, projection">	
+			@import url(/theme.css);				
+			@import url(/portlet.css);
+		</style>		
+	</head>
+	<body>
+		<div id="inboxView" class="ajax">
+			<h3>Inbox 1</h3>
+			<hr/>
+		</div>
+	</body>
+</html>

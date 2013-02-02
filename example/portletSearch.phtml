@@ -1,0 +1,68 @@
+<?php 
+//session_cache_limiter("public"); // this adds Last-Modified based on session modification !  
+session_start();
+$keyword = 	isset($_POST['keyword']) ? $_POST['keyword'] : ( 
+				isset($_GET['keyword']) ? $_GET['keyword'] : (
+					isset($_SESSION['search_keyword']) ? $_SESSION['search_keyword'] : null
+				) 
+			);
+			
+if ($keyword !== null) {
+	$_SESSION['search_keyword'] = $keyword;
+}
+
+if (isset($_SERVER['HTTP_PORTLET_FRAGMENTS'])) {
+	$fragments = explode(",",$_SERVER['HTTP_PORTLET_FRAGMENTS']);
+	header("Content-type: text/html-fragments; charest=UTF-8");
+} else {	
+	header("Content-type: text/html; charest=UTF-8");
+}
+
+$user = isset($_COOKIE['$email']) ? $_COOKIE['$email'] : null;
+
+
+$results = array();			
+
+
+if ($keyword) {		
+	/*
+	//TODO create result set	
+	$http = new rest_client('http://dev.datatherapy.com/dbe/testmodel');
+	$http->GET('person?&keyword='.urlencode($keyword),array('Accept'=>'application/json'));	
+	$results = json_decode($http->body,true);
+	*/
+	header("Cache-control: max-age=600");  
+}
+?>
+<html>
+	<head>
+		<style type="text/css" media="screen, projection">	
+			@import url(/theme.css);				
+			@import url(/portlet.css);
+		</style>		
+	</head>
+	<body>	
+		
+		<?php if (!isset($fragments) || array_search('searchTools',$fragments)!==false) : ?>	
+		<form id="searchTools"  method="post" >
+			<b>Search toolbox</b> <input type="text" name="keyword" value="<?php echo $keyword;?>"/><input type="submit" value="Search"/>		
+		</form>
+		<?php endif ?>	
+	
+		<?php if (!isset($fragments) || array_search('searchResults',$fragments)!==false) : ?>
+		<div id="searchResults">
+			<?php if ($keyword) echo "Results for <b>`$keyword`</b>";?>
+			<?php if ($user) echo " logged in `{$user}` has richer result set.."; ?>
+			<ul>
+				<?php foreach($results as $row) :?>
+				<li>
+					<?php echo "{$row['dc_name']}, {$row['dc_country_name']}";?>
+					<?php if (isset($_COOKIE['$email'])) echo ", ..."; ?>					
+				</li>
+				<?php endforeach?>
+			</ul>
+		</div>
+		<?php endif ?>	
+		
+	</body>
+</html>

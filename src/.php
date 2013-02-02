@@ -41,7 +41,7 @@ if (isset($_SERVER['HTTP_X_DOMAIN_REQUEST'])) {
 }
 
 session_start(); 
-require 'log/log.php'; 
+require 'log.php'; 
 
 
 global $gridportal_debug_mode;

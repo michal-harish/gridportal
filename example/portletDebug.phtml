@@ -1,0 +1,25 @@
+<?php
+	$debug = isset($_POST['debug']) ? $_POST['debug'] : (isset($_COOKIE['$debug']) ? true : false );
+	if ($debug) setcookie('$debug',$debug); else setcookie('$debug',$debug,1);
+?>
+<html>
+	<head>
+		<style type="text/css" media="screen, projection">	
+			@import url(/theme.css);				
+			@import url(/portlet.css);
+		</style>		
+	</head>
+	<body>
+		<div id="default">		
+			<?php if ($_GET['user']) : ?>
+			<form method="post" >
+				<input type="hidden" name="debug" value="0"/>
+				<label>		
+					<?php echo '<input type="checkbox" name="debug" value="1" '. ($debug ? 'checked="checked"': '').' onclick="form.submit()"/>';?> 
+					DEBUG 
+				</label>
+			</form>
+			<?php endif ?>
+		</div>
+	</body>
+</html>

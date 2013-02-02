@@ -27,7 +27,7 @@ runtime file at the very beginning of your script so that the output buffer hook
 before your application starts flushing html out. If you have gridportal submodule in the root of your web
 application in the directory 'gridportal' it could look like this: 
 
-    <?php require("gridportal/.php"); ?>
+    <?php require("gridportal/src/.php"); ?>
     <html>
         <head>
             ..
