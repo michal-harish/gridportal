@@ -41,87 +41,87 @@ application in the directory 'gridportal' it could look like this:
  
 Reference Manual
 ================
-1.1 For HTTP Portlet Specification see [specification](/specification.html).
+1.1 For HTTP Portlet Specification see [specification](http://htmlpreview.github.com/?https://github.com/michal-harish/gridportal/master/specification.html).
     
-1.2 HTML Mark-Up Extension   
-  
-    1.2.1 Portlet declarations in the html document's head     
-        <html>  
-            <head>
-            
-                <!-- declaration of the portlet for entire document -->
-                <portlet id="^[a-z_-0-9]+$" url="^/|https://">
-                    
-                    <!-- mapped url query string parameter; mandatory or optional-->                                                
-                    <param name="" get="^[a-z_-0-9]+$" [required="yes"]/>
-                    
-                    <!-- mapped cookie; mandatory or optional; global $cookie or private portlet_id[cookie_name]        
-                    <param name="" cookie="^\$[a-z_-0-9]+|[^\$\[]+\[[^\]]\]$" [required="yes"]/>
-                    
-                    <!-- a page-specific configuration param for portlet -->
-                    
-                    <!-- NOTE: mapped params will be part of the cache identifier whereas config params will not be -->                                   
-                    <param name="" value="...some_value.."/>                    
-                                                                                
-                </portlet>
-            </head>
-            ...
-        </html>
+1.2 HTML Mark-Up Extension  
+ 
+1.2.1 Portlet declarations in the html document's head     
+    <html>  
+        <head>
         
-    1.2.2 References to portlet fragments from the html document's body
-        <html>
-            ... 
-            <body>
-                ...
-                <!-- fragment refernce to portlet declared in head -->
-                <portlet id="declared_portlet_id" fragment="<fragment_id>"/>        
+            <!-- declaration of the portlet for entire document -->
+            <portlet id="^[a-z_-0-9]+$" url="^/|https://">
                 
-                <!-- portlet fragment refernce with explicit url -->
-                <portlet url="^/|https://" fragment="<fragment_id>"/>               
+                <!-- mapped url query string parameter; mandatory or optional-->                                                
+                <param name="" get="^[a-z_-0-9]+$" [required="yes"]/>
                 
-                <!-- all forms that don't have absolute actions will land on the target location-->
-                <portlet url="^/|https://" fragment="<fragment_id>" target="some_url_or_uri"/>  
-                ...
-            </body>
-        </html>
+                <!-- mapped cookie; mandatory or optional; global $cookie or private portlet_id[cookie_name]        
+                <param name="" cookie="^\$[a-z_-0-9]+|[^\$\[]+\[[^\]]\]$" [required="yes"]/>
+                
+                <!-- a page-specific configuration param for portlet -->
+                
+                <!-- NOTE: mapped params will be part of the cache identifier whereas config params will not be -->                                   
+                <param name="" value="...some_value.."/>                    
+                                                                            
+            </portlet>
+        </head>
+        ...
+    </html>
+    
+1.2.2 References to portlet fragments from the html document's body
+    <html>
+        ... 
+        <body>
+            ...
+            <!-- fragment refernce to portlet declared in head -->
+            <portlet id="declared_portlet_id" fragment="<fragment_id>"/>        
+            
+            <!-- portlet fragment refernce with explicit url -->
+            <portlet url="^/|https://" fragment="<fragment_id>"/>               
+            
+            <!-- all forms that don't have absolute actions will land on the target location-->
+            <portlet url="^/|https://" fragment="<fragment_id>" target="some_url_or_uri"/>  
+            ...
+        </body>
+    </html>
     
 1.3 Portlet HTML Mark-Up Limitations
 
-    1.3.1 Portlet Fragments
-        - portlet is a standard html document wrapped in a <html> tag 
-        - portlet's <body> is a container of fragments
-        - fragments are any elements that have id attribute assigned            
-        - fragments with class="ajax" must have id="<uniqueFragmentId>" and will be polled according to cache headers 
+1.3.1 Portlet Fragments
+    - portlet is a standard html document wrapped in a <html> tag 
+    - portlet's <body> is a container of fragments
+    - fragments are any elements that have id attribute assigned            
+    - fragments with class="ajax" must have id="<uniqueFragmentId>" and will be polled according to cache headers 
 
-    1.3.2 Portlet Links (@href, @src and @action)
-     
-        - absolute links will not be touched
-        - relative links that start with / will be extended to absolute links with the portlet base
-        - all other relative links will have their query string extended for required portlet params
-        - relative links that start with ? or # will not modify uri base        
-        - relative links with uri base will have their base to / of the portal
-            - therefore href="" will be pointing to the root of the portal /
-        - portal query string params(non-portlet) will be preserved in the portlet links
-        
-        
-    1.3.3 Portlet Styles
+1.3.2 Portlet Links (@href, @src and @action)
+ 
+    - absolute links will not be touched
+    - relative links that start with / will be extended to absolute links with the portlet base
+    - all other relative links will have their query string extended for required portlet params
+    - relative links that start with ? or # will not modify uri base        
+    - relative links with uri base will have their base to / of the portal
+        - therefore href="" will be pointing to the root of the portal /
+    - portal query string params(non-portlet) will be preserved in the portlet links
     
-        - all inline style will be removed and warnings issued
-        - class and id will be preserved but every fragment element will have it's class extended for the portlet_id
-        - portlets may have style in the head element for design purpose ( see example )
-        - upon insertion into the html documents fragments' class attribute will be prepended with "fragment" class 
+    
+1.3.3 Portlet Styles
+
+    - all inline style will be removed and warnings issued
+    - class and id will be preserved but every fragment element will have it's class extended for the portlet_id
+    - portlets may have style in the head element for design purpose ( see example )
+    - upon insertion into the html documents fragments' class attribute will be prepended with "fragment" class 
 
 1.4 Portlet Action Processing
 
-    1.4.1 Action Process Overview
+1.4.1 Action Process Overview
+
+    - Only one portlet per request can be a target of action
+    - Action's are declared via <form> tag  and are not cachable ( see 1.5 )    
+    - both <form  method="get"> and <form method="post"> are allowed
+    - either form has got a unique input pattern composed of named form elements (hidden,input, button, select, textarea)
+    - or the portal will attach a hidden field with name="action" and value will be the portlet id
+        - this will for example happen when there's more than one identical forms
     
-        - Only one portlet per request can be a target of action
-        - Action's are declared via <form> tag  and are not cachable ( see 1.5 )    
-        - both <form  method="get"> and <form method="post"> are allowed
-        - either form has got a unique input pattern composed of named form elements (hidden,input, button, select, textarea)
-        - or the portal will attach a hidden field with name="action" and value will be the portlet id
-            - this will for example happen when there's more than one identical forms
-        
 1.5 Caching
 
     - gridportal caches only per reqeust/per client basis
@@ -135,21 +135,18 @@ Reference Manual
 
     - invalid portlet mark-up will cause initialization error and will not be cached    
 
-     
         
 1.6 Cookies
 
-    There are two types of cookies
-    1. shared - begin with '$' symbol and can be accessed from any portlet 
-    2. private - each portlet has it's own transparent cookie  
-    
+There are two types of cookies
+1.6.1 shared - begin with '$' symbol and can be accessed from any portlet 
+1.6.2 private - each portlet has it's own transparent cookie  
     
 1.7. Session
     - currently standard php session
     - session_benchmark($datetime) function is to be used after require(".php") to invalidate all sessions older than
         given date, which deals with upgrading the application
-    
- 
+
  
 
 Backlog
