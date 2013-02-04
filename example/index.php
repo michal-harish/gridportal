@@ -43,7 +43,7 @@
 		</div>
 		
 		<!-- blocking portlet that responds to change immediately -->
-		<g:portlet class="ajax" id="gridport-log" url="/portletBlocking.php" fragment="clock"/>
+		<g:portlet class="ajax" id="gridport-log" url="/portletBlocking.php" fragment="time"/>
 		
 
 		<table style="width:100%;" >
