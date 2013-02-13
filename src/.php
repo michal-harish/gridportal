@@ -589,7 +589,7 @@ function fetch_portlets_queue(&$portlets) {
 
             //A.process_portlet_response($portlet,http_curl($portlet['url'],$entity,$portlet['headers']));                            
             //B.
-            $http = new http($portlet['url']);
+            $http = new http($portlet['url'], null, 600);
             if ($entity) $status = $http->POST('',$portlet['headers'],$entity);
             else $status = $http->GET('',$portlet['headers']);
             process_portlet_response($portlet,$status,$http->headers,$http->body);
